@@ -6,9 +6,9 @@
 <title>my space</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap');
-
+ 
 * { margin: 0; padding: 0; box-sizing: border-box; }
-
+ 
 body {
   background-color: #FDF0F0;
   background-image:
@@ -17,13 +17,13 @@ body {
   font-family: 'DM Sans', sans-serif;
   min-height: 100vh;
 }
-
+ 
 .container {
   max-width: 900px;
   margin: 0 auto;
   padding: 2.5rem 2rem;
 }
-
+ 
 /* EDIT MODE TOGGLE */
 .edit-bar {
   display: flex;
@@ -47,7 +47,7 @@ body {
 .edit-toggle:hover { background: #fff5f8; }
 .edit-toggle.active { background: #fce4ec; border-color: #e8a0b4; color: #b5395a; }
 .edit-hint { font-size: 11px; color: #c4a0b0; letter-spacing: 0.05em; }
-
+ 
 /* HEADER */
 header { text-align: center; margin-bottom: 2.5rem; }
 .header-tag {
@@ -77,7 +77,7 @@ header p { font-size: 13px; color: #a07080; letter-spacing: 0.05em; }
   background: linear-gradient(90deg, transparent, #e8a0b4, transparent);
   margin: 1rem auto;
 }
-
+ 
 /* EDITABLE FIELDS */
 .editable {
   position: relative;
@@ -92,7 +92,7 @@ body.editing .editable {
   outline-offset: 4px;
 }
 body.editing .editable:hover { background: rgba(255,200,220,0.15); }
-
+ 
 /* GRID */
 .grid {
   display: grid;
@@ -124,7 +124,7 @@ body:not(.editing) .card:hover {
 .card-desc { font-size: 12px; color: #a07080; line-height: 1.6; flex: 1; }
 .card-arrow { font-size: 16px; color: #e8a0b4; align-self: flex-end; transition: transform 0.2s; }
 body:not(.editing) .card:hover .card-arrow { transform: translate(3px, -3px); }
-
+ 
 /* COLOR PICKER */
 .color-row { display: none; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
 body.editing .color-row { display: flex; }
@@ -135,7 +135,7 @@ body.editing .color-row { display: flex; }
 }
 .color-dot:hover { transform: scale(1.2); }
 .color-dot.selected { border-color: #2d1a22; }
-
+ 
 /* CARD CONTROLS */
 .card-controls { display: none; position: absolute; top: 10px; right: 10px; gap: 6px; }
 body.editing .card-controls { display: flex; }
@@ -150,7 +150,7 @@ body.editing .card-controls { display: flex; }
 .card-btn:hover { background: #fff0f5; }
 .card-btn.del { color: #e06080; border-color: #f5c0d0; }
 .card-btn.del:hover { background: #fff0f3; }
-
+ 
 /* ADD CARD */
 .add-card {
   display: none;
@@ -165,7 +165,7 @@ body.editing .card-controls { display: flex; }
 }
 body.editing .add-card { display: flex; }
 .add-card:hover { background: rgba(255,220,230,0.3); border-color: #e8a0b4; color: #c47b8e; }
-
+ 
 /* POPUP */
 .popup-overlay {
   display: none; position: fixed; inset: 0;
@@ -198,10 +198,10 @@ body.editing .add-card { display: flex; }
 .popup-btn.save:hover { background: #f8c8d8; }
 .popup-btn.cancel { background: transparent; color: #a07080; }
 .popup-btn.cancel:hover { background: #fdf5f7; }
-
+ 
 footer { text-align: center; margin-top: 2.5rem; font-size: 11px; color: #c4a0b0; letter-spacing: 0.08em; }
 footer span { color: #e8a0b4; }
-
+ 
 @keyframes fadeUp {
   from { opacity: 0; transform: translateY(16px); }
   to { opacity: 1; transform: translateY(0); }
@@ -217,23 +217,23 @@ header { animation: fadeUp 0.5s ease both; }
 </head>
 <body>
 <div class="container">
-
+ 
   <div class="edit-bar">
     <span class="edit-hint" id="hint"></span>
     <button class="edit-toggle" id="editToggle" onclick="toggleEdit()">✦ edit mode</button>
   </div>
-
+ 
   <header>
     <div class="header-tag">
       <span class="editable" onclick="openPopup('tag')" id="tagText">est. 2026 · my little world</span>
     </div>
-    <h1><span class="editable" onclick="openPopup('title')" id="titleText">this is <em>my</em> space</span></h1>
+    <h1><span class="editable" onclick="openPopup('title')" id="titleText"><em>zee's</em> space</span></h1>
     <div class="deco-line"></div>
     <p><span class="editable" onclick="openPopup('sub')" id="subText">a home for everything i am & everything i'm becoming</span></p>
   </header>
-
+ 
   <div class="grid" id="grid">
-
+ 
     <div class="card wide" style="background:#fff0f5" id="card-0">
       <div class="card-controls">
         <button class="card-btn" onclick="openCardEdit(0)">edit</button>
@@ -246,7 +246,7 @@ header { animation: fadeUp 0.5s ease both; }
       <div class="card-arrow">↗</div>
       <div class="color-row" id="cr-0"></div>
     </div>
-
+ 
     <div class="card" style="background:#fff8f0" id="card-1">
       <div class="card-controls">
         <button class="card-btn" onclick="openCardEdit(1)">edit</button>
@@ -259,7 +259,7 @@ header { animation: fadeUp 0.5s ease both; }
       <div class="card-arrow">↗</div>
       <div class="color-row" id="cr-1"></div>
     </div>
-
+ 
     <div class="card" style="background:#f5f0ff" id="card-2">
       <div class="card-controls">
         <button class="card-btn" onclick="openCardEdit(2)">edit</button>
@@ -272,7 +272,7 @@ header { animation: fadeUp 0.5s ease both; }
       <div class="card-arrow">↗</div>
       <div class="color-row" id="cr-2"></div>
     </div>
-
+ 
     <div class="card" style="background:#fff0fa" id="card-3">
       <div class="card-controls">
         <button class="card-btn" onclick="openCardEdit(3)">edit</button>
@@ -285,7 +285,7 @@ header { animation: fadeUp 0.5s ease both; }
       <div class="card-arrow">↗</div>
       <div class="color-row" id="cr-3"></div>
     </div>
-
+ 
     <div class="card wide" style="background:#f0f8ff" id="card-4">
       <div class="card-controls">
         <button class="card-btn" onclick="openCardEdit(4)">edit</button>
@@ -298,7 +298,7 @@ header { animation: fadeUp 0.5s ease both; }
       <div class="card-arrow">↗</div>
       <div class="color-row" id="cr-4"></div>
     </div>
-
+ 
     <div class="card" style="background:#f0fff5" id="card-5">
       <div class="card-controls">
         <button class="card-btn" onclick="openCardEdit(5)">edit</button>
@@ -311,19 +311,19 @@ header { animation: fadeUp 0.5s ease both; }
       <div class="card-arrow">↗</div>
       <div class="color-row" id="cr-5"></div>
     </div>
-
+ 
     <div class="add-card" onclick="addCard()">
       <span style="font-size:18px">+</span> add a new card
     </div>
-
+ 
   </div>
-
+ 
   <footer>
     made with love & <span>♡</span> ·
     <span class="editable" onclick="openPopup('footer')" id="footerText">your personal space on the internet</span>
   </footer>
 </div>
-
+ 
 <!-- POPUP -->
 <div class="popup-overlay" id="overlay">
   <div class="popup">
@@ -337,7 +337,7 @@ header { animation: fadeUp 0.5s ease both; }
     </div>
   </div>
 </div>
-
+ 
 <script>
 const COLORS = [
   { bg: '#fff0f5', dot: '#ffb3c6' },
@@ -349,12 +349,12 @@ const COLORS = [
   { bg: '#fff0fe', dot: '#f5b8f5' },
   { bg: '#f5f5f5', dot: '#d0d0d0' },
 ];
-
+ 
 let editing = false;
 let currentField = null;
 let currentCardIdx = null;
 let cardCount = 6;
-
+ 
 function toggleEdit() {
   editing = !editing;
   document.body.classList.toggle('editing', editing);
@@ -365,7 +365,7 @@ function toggleEdit() {
   hint.textContent = editing ? 'click anything to change it' : '';
   if (editing) buildColorRows();
 }
-
+ 
 function buildColorRows() {
   for (let i = 0; i < cardCount; i++) {
     const row = document.getElementById('cr-' + i);
@@ -379,7 +379,7 @@ function buildColorRows() {
     });
   }
 }
-
+ 
 function setCardColor(idx, bg, dot, row) {
   const card = document.getElementById('card-' + idx);
   if (!card) return;
@@ -387,7 +387,7 @@ function setCardColor(idx, bg, dot, row) {
   row.querySelectorAll('.color-dot').forEach(d => d.classList.remove('selected'));
   dot.classList.add('selected');
 }
-
+ 
 function openPopup(field) {
   if (!editing) return;
   currentField = field;
@@ -410,7 +410,7 @@ function openPopup(field) {
   document.getElementById('overlay').classList.add('open');
   setTimeout(() => input.focus(), 50);
 }
-
+ 
 function openCardEdit(idx) {
   currentCardIdx = idx;
   currentField = 'card';
@@ -430,7 +430,7 @@ function openCardEdit(idx) {
   document.getElementById('overlay').classList.add('open');
   setTimeout(() => ta.focus(), 50);
 }
-
+ 
 function savePopup() {
   if (currentField === 'card' && currentCardIdx !== null) {
     const lines = document.getElementById('popup-textarea').value.split('\n');
@@ -451,13 +451,13 @@ function savePopup() {
   }
   closePopup();
 }
-
+ 
 function closePopup() {
   document.getElementById('overlay').classList.remove('open');
   currentField = null;
   currentCardIdx = null;
 }
-
+ 
 function deleteCard(idx) {
   const card = document.getElementById('card-' + idx);
   if (!card) return;
@@ -466,7 +466,7 @@ function deleteCard(idx) {
   card.style.transform = 'scale(0.9)';
   setTimeout(() => card.remove(), 300);
 }
-
+ 
 function addCard() {
   const grid = document.getElementById('grid');
   const addBtn = grid.querySelector('.add-card');
@@ -496,7 +496,7 @@ function addCard() {
   });
   buildColorRows();
 }
-
+ 
 document.getElementById('overlay').addEventListener('click', function(e) {
   if (e.target === this) closePopup();
 });
@@ -504,3 +504,4 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape') closePopup()
 </script>
 </body>
 </html>
+ 
