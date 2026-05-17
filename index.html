@@ -3,12 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>my space</title>
+<title>zee's world</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap');
- 
+
 * { margin: 0; padding: 0; box-sizing: border-box; }
- 
+
 body {
   background-color: #FDF0F0;
   background-image:
@@ -17,14 +17,14 @@ body {
   font-family: 'DM Sans', sans-serif;
   min-height: 100vh;
 }
- 
+
 .container {
   max-width: 900px;
   margin: 0 auto;
   padding: 2.5rem 2rem;
 }
- 
-/* EDIT MODE TOGGLE */
+
+/* EDIT BAR */
 .edit-bar {
   display: flex;
   align-items: center;
@@ -47,24 +47,55 @@ body {
 .edit-toggle:hover { background: #fff5f8; }
 .edit-toggle.active { background: #fce4ec; border-color: #e8a0b4; color: #b5395a; }
 .edit-hint { font-size: 11px; color: #c4a0b0; letter-spacing: 0.05em; }
- 
-/* HEADER */
-header { text-align: center; margin-bottom: 2.5rem; }
+
+/* =====================
+   HERO HEADER
+   ===================== */
+header {
+  position: relative;
+  text-align: center;
+  margin-bottom: 2rem;
+  border-radius: 28px;
+  overflow: hidden;
+  /* ↓ swap header.jpg for your actual filename */
+  background-image: url('images/header.jpg');
+  background-size: cover;
+  background-position: center;
+  /* fallback colour if no image yet */
+  background-color: #f7d6e0;
+  padding: 3.5rem 2rem;
+}
+
+/* frosted glass overlay */
+header::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  background: rgba(253, 235, 240, 0.55);
+  z-index: 0;
+}
+
+/* keep all header content above the blur */
+header > * { position: relative; z-index: 1; }
+
 .header-tag {
   display: inline-block;
   font-size: 11px;
   letter-spacing: 0.2em;
   text-transform: uppercase;
   color: #c47b8e;
-  border: 1px solid #f0b8c8;
+  border: 1px solid rgba(240,184,200,0.7);
   padding: 4px 14px;
   border-radius: 20px;
   margin-bottom: 1rem;
-  background: rgba(255,255,255,0.6);
+  background: rgba(255,255,255,0.55);
 }
+
 header h1 {
   font-family: 'Playfair Display', serif;
-  font-size: clamp(2rem, 5vw, 4rem);
+  font-size: clamp(2.5rem, 6vw, 4.5rem);
   font-weight: 400;
   color: #2d1a22;
   line-height: 1.1;
@@ -72,13 +103,43 @@ header h1 {
 }
 header h1 em { font-style: italic; color: #c75b7a; }
 header p { font-size: 13px; color: #a07080; letter-spacing: 0.05em; }
+
 .deco-line {
   width: 60px; height: 1px;
   background: linear-gradient(90deg, transparent, #e8a0b4, transparent);
   margin: 1rem auto;
 }
- 
-/* EDITABLE FIELDS */
+
+/* CLOCK + DATE inside header */
+.time-strip {
+  display: inline-flex;
+  align-items: center;
+  gap: 1.2rem;
+  margin-top: 1.2rem;
+  background: rgba(255,255,255,0.5);
+  border: 1px solid rgba(240,184,200,0.5);
+  border-radius: 40px;
+  padding: 8px 1.6rem;
+}
+.time-clock {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.4rem;
+  font-weight: 400;
+  color: #2d1a22;
+  letter-spacing: 0.05em;
+}
+.time-date {
+  font-size: 11px;
+  color: #a07080;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.time-divider {
+  width: 1px; height: 24px;
+  background: rgba(220,160,180,0.4);
+}
+
+/* EDITABLE */
 .editable {
   position: relative;
   cursor: default;
@@ -92,7 +153,7 @@ body.editing .editable {
   outline-offset: 4px;
 }
 body.editing .editable:hover { background: rgba(255,200,220,0.15); }
- 
+
 /* GRID */
 .grid {
   display: grid;
@@ -124,7 +185,7 @@ body:not(.editing) .card:hover {
 .card-desc { font-size: 12px; color: #a07080; line-height: 1.6; flex: 1; }
 .card-arrow { font-size: 16px; color: #e8a0b4; align-self: flex-end; transition: transform 0.2s; }
 body:not(.editing) .card:hover .card-arrow { transform: translate(3px, -3px); }
- 
+
 /* COLOR PICKER */
 .color-row { display: none; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
 body.editing .color-row { display: flex; }
@@ -135,7 +196,7 @@ body.editing .color-row { display: flex; }
 }
 .color-dot:hover { transform: scale(1.2); }
 .color-dot.selected { border-color: #2d1a22; }
- 
+
 /* CARD CONTROLS */
 .card-controls { display: none; position: absolute; top: 10px; right: 10px; gap: 6px; }
 body.editing .card-controls { display: flex; }
@@ -150,7 +211,7 @@ body.editing .card-controls { display: flex; }
 .card-btn:hover { background: #fff0f5; }
 .card-btn.del { color: #e06080; border-color: #f5c0d0; }
 .card-btn.del:hover { background: #fff0f3; }
- 
+
 /* ADD CARD */
 .add-card {
   display: none;
@@ -165,7 +226,7 @@ body.editing .card-controls { display: flex; }
 }
 body.editing .add-card { display: flex; }
 .add-card:hover { background: rgba(255,220,230,0.3); border-color: #e8a0b4; color: #c47b8e; }
- 
+
 /* POPUP */
 .popup-overlay {
   display: none; position: fixed; inset: 0;
@@ -198,10 +259,10 @@ body.editing .add-card { display: flex; }
 .popup-btn.save:hover { background: #f8c8d8; }
 .popup-btn.cancel { background: transparent; color: #a07080; }
 .popup-btn.cancel:hover { background: #fdf5f7; }
- 
+
 footer { text-align: center; margin-top: 2.5rem; font-size: 11px; color: #c4a0b0; letter-spacing: 0.08em; }
 footer span { color: #e8a0b4; }
- 
+
 @keyframes fadeUp {
   from { opacity: 0; transform: translateY(16px); }
   to { opacity: 1; transform: translateY(0); }
@@ -217,23 +278,29 @@ header { animation: fadeUp 0.5s ease both; }
 </head>
 <body>
 <div class="container">
- 
+
   <div class="edit-bar">
     <span class="edit-hint" id="hint"></span>
     <button class="edit-toggle" id="editToggle" onclick="toggleEdit()">✦ edit mode</button>
   </div>
- 
+
   <header>
     <div class="header-tag">
       <span class="editable" onclick="openPopup('tag')" id="tagText">est. 2026 · my little world</span>
     </div>
-    <h1><span class="editable" onclick="openPopup('title')" id="titleText"><em>zee's</em> space</span></h1>
+    <h1><span class="editable" onclick="openPopup('title')" id="titleText"><em>zee's</em> world</span></h1>
     <div class="deco-line"></div>
     <p><span class="editable" onclick="openPopup('sub')" id="subText">a home for everything i am & everything i'm becoming</span></p>
+
+    <div class="time-strip">
+      <div class="time-clock" id="clock">00:00:00</div>
+      <div class="time-divider"></div>
+      <div class="time-date" id="datestr">loading...</div>
+    </div>
   </header>
- 
+
   <div class="grid" id="grid">
- 
+
     <div class="card wide" style="background:#fff0f5" id="card-0">
       <div class="card-controls">
         <button class="card-btn" onclick="openCardEdit(0)">edit</button>
@@ -246,7 +313,7 @@ header { animation: fadeUp 0.5s ease both; }
       <div class="card-arrow">↗</div>
       <div class="color-row" id="cr-0"></div>
     </div>
- 
+
     <div class="card" style="background:#fff8f0" id="card-1">
       <div class="card-controls">
         <button class="card-btn" onclick="openCardEdit(1)">edit</button>
@@ -259,7 +326,7 @@ header { animation: fadeUp 0.5s ease both; }
       <div class="card-arrow">↗</div>
       <div class="color-row" id="cr-1"></div>
     </div>
- 
+
     <div class="card" style="background:#f5f0ff" id="card-2">
       <div class="card-controls">
         <button class="card-btn" onclick="openCardEdit(2)">edit</button>
@@ -272,7 +339,7 @@ header { animation: fadeUp 0.5s ease both; }
       <div class="card-arrow">↗</div>
       <div class="color-row" id="cr-2"></div>
     </div>
- 
+
     <div class="card" style="background:#fff0fa" id="card-3">
       <div class="card-controls">
         <button class="card-btn" onclick="openCardEdit(3)">edit</button>
@@ -285,7 +352,7 @@ header { animation: fadeUp 0.5s ease both; }
       <div class="card-arrow">↗</div>
       <div class="color-row" id="cr-3"></div>
     </div>
- 
+
     <div class="card wide" style="background:#f0f8ff" id="card-4">
       <div class="card-controls">
         <button class="card-btn" onclick="openCardEdit(4)">edit</button>
@@ -298,7 +365,7 @@ header { animation: fadeUp 0.5s ease both; }
       <div class="card-arrow">↗</div>
       <div class="color-row" id="cr-4"></div>
     </div>
- 
+
     <div class="card" style="background:#f0fff5" id="card-5">
       <div class="card-controls">
         <button class="card-btn" onclick="openCardEdit(5)">edit</button>
@@ -311,20 +378,19 @@ header { animation: fadeUp 0.5s ease both; }
       <div class="card-arrow">↗</div>
       <div class="color-row" id="cr-5"></div>
     </div>
- 
+
     <div class="add-card" onclick="addCard()">
       <span style="font-size:18px">+</span> add a new card
     </div>
- 
+
   </div>
- 
+
   <footer>
     made with love & <span>♡</span> ·
     <span class="editable" onclick="openPopup('footer')" id="footerText">your personal space on the internet</span>
   </footer>
 </div>
- 
-<!-- POPUP -->
+
 <div class="popup-overlay" id="overlay">
   <div class="popup">
     <h3 id="popup-title">edit text</h3>
@@ -337,8 +403,23 @@ header { animation: fadeUp 0.5s ease both; }
     </div>
   </div>
 </div>
- 
+
 <script>
+// CLOCK
+function tick() {
+  const now = new Date();
+  const h = String(now.getHours()).padStart(2,'0');
+  const m = String(now.getMinutes()).padStart(2,'0');
+  const s = String(now.getSeconds()).padStart(2,'0');
+  document.getElementById('clock').textContent = h+':'+m+':'+s;
+  const days = ['sunday','monday','tuesday','wednesday','thursday','friday','saturday'];
+  const months = ['january','february','march','april','may','june','july','august','september','october','november','december'];
+  const d = now;
+  document.getElementById('datestr').textContent = days[d.getDay()]+' · '+months[d.getMonth()]+' '+d.getDate()+', '+d.getFullYear();
+}
+tick(); setInterval(tick, 1000);
+
+// EDIT MODE
 const COLORS = [
   { bg: '#fff0f5', dot: '#ffb3c6' },
   { bg: '#fff8f0', dot: '#ffc49b' },
@@ -349,12 +430,12 @@ const COLORS = [
   { bg: '#fff0fe', dot: '#f5b8f5' },
   { bg: '#f5f5f5', dot: '#d0d0d0' },
 ];
- 
+
 let editing = false;
 let currentField = null;
 let currentCardIdx = null;
 let cardCount = 6;
- 
+
 function toggleEdit() {
   editing = !editing;
   document.body.classList.toggle('editing', editing);
@@ -365,7 +446,7 @@ function toggleEdit() {
   hint.textContent = editing ? 'click anything to change it' : '';
   if (editing) buildColorRows();
 }
- 
+
 function buildColorRows() {
   for (let i = 0; i < cardCount; i++) {
     const row = document.getElementById('cr-' + i);
@@ -379,7 +460,7 @@ function buildColorRows() {
     });
   }
 }
- 
+
 function setCardColor(idx, bg, dot, row) {
   const card = document.getElementById('card-' + idx);
   if (!card) return;
@@ -387,16 +468,16 @@ function setCardColor(idx, bg, dot, row) {
   row.querySelectorAll('.color-dot').forEach(d => d.classList.remove('selected'));
   dot.classList.add('selected');
 }
- 
+
 function openPopup(field) {
   if (!editing) return;
   currentField = field;
   currentCardIdx = null;
   const map = {
-    tag:    { label: 'tag line',  title: 'edit tag',      el: 'tagText',    multi: false },
-    title:  { label: 'title (wrap a word in *asterisks* to italicise)', title: 'edit title', el: 'titleText', multi: false },
-    sub:    { label: 'subtitle',  title: 'edit subtitle', el: 'subText',    multi: false },
-    footer: { label: 'footer',    title: 'edit footer',   el: 'footerText', multi: false },
+    tag:    { label: 'tag line',  title: 'edit tag',      el: 'tagText' },
+    title:  { label: 'title (wrap a word in *asterisks* to italicise)', title: 'edit title', el: 'titleText' },
+    sub:    { label: 'subtitle',  title: 'edit subtitle', el: 'subText' },
+    footer: { label: 'footer',    title: 'edit footer',   el: 'footerText' },
   };
   const cfg = map[field];
   document.getElementById('popup-label').textContent = cfg.label;
@@ -410,7 +491,7 @@ function openPopup(field) {
   document.getElementById('overlay').classList.add('open');
   setTimeout(() => input.focus(), 50);
 }
- 
+
 function openCardEdit(idx) {
   currentCardIdx = idx;
   currentField = 'card';
@@ -430,7 +511,7 @@ function openCardEdit(idx) {
   document.getElementById('overlay').classList.add('open');
   setTimeout(() => ta.focus(), 50);
 }
- 
+
 function savePopup() {
   if (currentField === 'card' && currentCardIdx !== null) {
     const lines = document.getElementById('popup-textarea').value.split('\n');
@@ -451,13 +532,13 @@ function savePopup() {
   }
   closePopup();
 }
- 
+
 function closePopup() {
   document.getElementById('overlay').classList.remove('open');
   currentField = null;
   currentCardIdx = null;
 }
- 
+
 function deleteCard(idx) {
   const card = document.getElementById('card-' + idx);
   if (!card) return;
@@ -466,7 +547,7 @@ function deleteCard(idx) {
   card.style.transform = 'scale(0.9)';
   setTimeout(() => card.remove(), 300);
 }
- 
+
 function addCard() {
   const grid = document.getElementById('grid');
   const addBtn = grid.querySelector('.add-card');
@@ -496,7 +577,7 @@ function addCard() {
   });
   buildColorRows();
 }
- 
+
 document.getElementById('overlay').addEventListener('click', function(e) {
   if (e.target === this) closePopup();
 });
@@ -504,4 +585,3 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape') closePopup()
 </script>
 </body>
 </html>
- 
