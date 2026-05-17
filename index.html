@@ -1,1 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>my space</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap');
 
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  background-color: #FDF0F0;
+  background-image:
+    radial-gradient(circle at 20% 20%, #ffd6e0 0%, transparent 40%),
+    radial-gradient(circle at 80% 80%, #ffe8f0 0%, transparent 40%);
+  font-family: 'DM Sans', sans-serif;
+  min-height: 100vh;
+}
+
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 2.5rem 2rem;
+}
+
+/* EDIT MODE TOGGLE */
+.edit-bar {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-bottom: 1.5rem;
+}
+.edit-toggle {
+  background: rgba(255,255,255,0.8);
+  border: 1px solid #f0b8c8;
+  color: #c47b8e;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  padding: 6px 16px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.edit-toggle:hover { background: #fff5f8; }
+.edit-toggle.active { background: #fce4ec; border-color: #e8a0b4; color: #b5395a; }
+.edit-hint { font-size: 11px; color: #c4a0b0; letter-spacing: 0.05em; }
+
+/* HEADER */
+header { text-align: center; margin-bottom: 2.5rem; }
+.header-tag {
+  display: inline-block;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #c47b8e;
+  border: 1px solid #f0b8c8;
+  padding: 4px 14px;
+  border-radius: 20px;
+  margin-bottom: 1rem;
+  background: rgba(255,255,255,0.6);
+}
+header h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(2rem, 5vw, 4rem);
+  font-weight: 400;
+  color: #2d1a22;
+  line-height: 1.1;
+  margin-bottom: 0.4rem;
+}
+header h1 em { font-style: italic; color: #c75b7a; }
+header p { font-size: 13px; color: #a07080; letter-spacing: 0.05em; }
+.deco-line {
+  width: 60px; height: 1px;
+  background: linear-gradient(90deg, transparent, #e8a0b4, transparent);
+  margin: 1rem auto;
+}
+
+/* EDITABLE FIELDS */
+.editable {
+  position: relative;
+  cursor: default;
+  border-radius: 6px;
+  transition: background 0.15s;
+  display: inline-block;
+}
+body.editing .editable {
+  cursor: pointer;
+  outline: 1.5px dashed #e8a0b4;
+  outline-offset: 4px;
+}
+body.editing .editable:hover { background: rgba(255,200,220,0.15); }
+
+/* GRID */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+.card {
+  background: rgba(255,255,255,0.75);
+  border: 1px solid rgba(230,180,200,0.4);
+  border-radius: 20px;
+  padding: 1.75rem 1.4rem;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  transition: transform 0.25s, box-shadow 0.25s;
+  text-decoration: none;
+}
+body:not(.editing) .card { cursor: pointer; }
+body:not(.editing) .card:hover {
+  transform: translateY(-4px) rotate(0.3deg);
+  box-shadow: 0 16px 40px rgba(180,80,120,0.12);
+}
+.card.wide { grid-column: span 2; }
+.card-emoji { font-size: 1.8rem; line-height: 1; }
+.card-label { font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: #c47b8e; font-weight: 500; }
+.card-title { font-family: 'Playfair Display', serif; font-size: 1.3rem; font-weight: 700; color: #2d1a22; line-height: 1.2; }
+.card-desc { font-size: 12px; color: #a07080; line-height: 1.6; flex: 1; }
+.card-arrow { font-size: 16px; color: #e8a0b4; align-self: flex-end; transition: transform 0.2s; }
+body:not(.editing) .card:hover .card-arrow { transform: translate(3px, -3px); }
+
+/* COLOR PICKER */
+.color-row { display: none; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+body.editing .color-row { display: flex; }
+.color-dot {
+  width: 18px; height: 18px; border-radius: 50%;
+  cursor: pointer; border: 2px solid transparent;
+  transition: transform 0.15s, border-color 0.15s;
+}
+.color-dot:hover { transform: scale(1.2); }
+.color-dot.selected { border-color: #2d1a22; }
+
+/* CARD CONTROLS */
+.card-controls { display: none; position: absolute; top: 10px; right: 10px; gap: 6px; }
+body.editing .card-controls { display: flex; }
+.card-btn {
+  background: rgba(255,255,255,0.9);
+  border: 1px solid #f0b8c8;
+  color: #c47b8e; font-size: 11px;
+  padding: 3px 8px; border-radius: 10px;
+  cursor: pointer; font-family: 'DM Sans', sans-serif;
+  transition: background 0.15s;
+}
+.card-btn:hover { background: #fff0f5; }
+.card-btn.del { color: #e06080; border-color: #f5c0d0; }
+.card-btn.del:hover { background: #fff0f3; }
+
+/* ADD CARD */
+.add-card {
+  display: none;
+  background: rgba(255,255,255,0.4);
+  border: 1.5px dashed rgba(230,180,200,0.6);
+  border-radius: 20px; padding: 1.75rem 1.4rem;
+  align-items: center; justify-content: center;
+  cursor: pointer; color: #d4a0b4; font-size: 13px;
+  letter-spacing: 0.05em;
+  transition: background 0.2s, border-color 0.2s;
+  gap: 8px; min-height: 120px;
+}
+body.editing .add-card { display: flex; }
+.add-card:hover { background: rgba(255,220,230,0.3); border-color: #e8a0b4; color: #c47b8e; }
+
+/* POPUP */
+.popup-overlay {
+  display: none; position: fixed; inset: 0;
+  background: rgba(30,10,20,0.25);
+  z-index: 100; align-items: center; justify-content: center;
+}
+.popup-overlay.open { display: flex; }
+.popup {
+  background: #fff; border-radius: 20px; padding: 1.8rem;
+  width: min(380px, 90vw);
+  border: 1px solid #f0c8d8;
+  box-shadow: 0 20px 60px rgba(180,80,120,0.15);
+}
+.popup h3 { font-family: 'Playfair Display', serif; font-size: 1.1rem; color: #2d1a22; margin-bottom: 1.2rem; }
+.popup label { font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: #c47b8e; display: block; margin-bottom: 4px; }
+.popup input, .popup textarea {
+  width: 100%; border: 1px solid #f0c0d0; border-radius: 10px;
+  padding: 8px 12px; font-family: 'DM Sans', sans-serif;
+  font-size: 13px; color: #2d1a22; margin-bottom: 1rem;
+  outline: none; transition: border-color 0.15s; resize: none;
+}
+.popup input:focus, .popup textarea:focus { border-color: #e8a0b4; }
+.popup-actions { display: flex; gap: 8px; justify-content: flex-end; }
+.popup-btn {
+  padding: 7px 18px; border-radius: 12px; font-size: 12px;
+  font-family: 'DM Sans', sans-serif; cursor: pointer;
+  border: 1px solid #f0c0d0; transition: all 0.15s;
+}
+.popup-btn.save { background: #fce4ec; color: #b5395a; border-color: #e8a0b4; }
+.popup-btn.save:hover { background: #f8c8d8; }
+.popup-btn.cancel { background: transparent; color: #a07080; }
+.popup-btn.cancel:hover { background: #fdf5f7; }
+
+footer { text-align: center; margin-top: 2.5rem; font-size: 11px; color: #c4a0b0; letter-spacing: 0.08em; }
+footer span { color: #e8a0b4; }
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+header { animation: fadeUp 0.5s ease both; }
+.card:nth-child(1) { animation: fadeUp 0.4s ease 0.1s both; }
+.card:nth-child(2) { animation: fadeUp 0.4s ease 0.2s both; }
+.card:nth-child(3) { animation: fadeUp 0.4s ease 0.3s both; }
+.card:nth-child(4) { animation: fadeUp 0.4s ease 0.4s both; }
+.card:nth-child(5) { animation: fadeUp 0.4s ease 0.5s both; }
+.card:nth-child(6) { animation: fadeUp 0.4s ease 0.6s both; }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="edit-bar">
+    <span class="edit-hint" id="hint"></span>
+    <button class="edit-toggle" id="editToggle" onclick="toggleEdit()">✦ edit mode</button>
+  </div>
+
+  <header>
+    <div class="header-tag">
+      <span class="editable" onclick="openPopup('tag')" id="tagText">est. 2026 · my little world</span>
+    </div>
+    <h1><span class="editable" onclick="openPopup('title')" id="titleText">this is <em>my</em> space</span></h1>
+    <div class="deco-line"></div>
+    <p><span class="editable" onclick="openPopup('sub')" id="subText">a home for everything i am & everything i'm becoming</span></p>
+  </header>
+
+  <div class="grid" id="grid">
+
+    <div class="card wide" style="background:#fff0f5" id="card-0">
+      <div class="card-controls">
+        <button class="card-btn" onclick="openCardEdit(0)">edit</button>
+        <button class="card-btn del" onclick="deleteCard(0)">✕</button>
+      </div>
+      <div class="card-emoji" id="e-0">🌸</div>
+      <div class="card-label" id="l-0">private thoughts</div>
+      <div class="card-title" id="t-0">Journal</div>
+      <div class="card-desc" id="d-0">write, reflect, and keep your inner world safe. every entry is just for you.</div>
+      <div class="card-arrow">↗</div>
+      <div class="color-row" id="cr-0"></div>
+    </div>
+
+    <div class="card" style="background:#fff8f0" id="card-1">
+      <div class="card-controls">
+        <button class="card-btn" onclick="openCardEdit(1)">edit</button>
+        <button class="card-btn del" onclick="deleteCard(1)">✕</button>
+      </div>
+      <div class="card-emoji" id="e-1">✦</div>
+      <div class="card-label" id="l-1">in progress</div>
+      <div class="card-title" id="t-1">Projects</div>
+      <div class="card-desc" id="d-1">track what you're building & making.</div>
+      <div class="card-arrow">↗</div>
+      <div class="color-row" id="cr-1"></div>
+    </div>
+
+    <div class="card" style="background:#f5f0ff" id="card-2">
+      <div class="card-controls">
+        <button class="card-btn" onclick="openCardEdit(2)">edit</button>
+        <button class="card-btn del" onclick="deleteCard(2)">✕</button>
+      </div>
+      <div class="card-emoji" id="e-2">📖</div>
+      <div class="card-label" id="l-2">shelf</div>
+      <div class="card-title" id="t-2">Book Reviews</div>
+      <div class="card-desc" id="d-2">rate, review, remember every book.</div>
+      <div class="card-arrow">↗</div>
+      <div class="color-row" id="cr-2"></div>
+    </div>
+
+    <div class="card" style="background:#fff0fa" id="card-3">
+      <div class="card-controls">
+        <button class="card-btn" onclick="openCardEdit(3)">edit</button>
+        <button class="card-btn del" onclick="deleteCard(3)">✕</button>
+      </div>
+      <div class="card-emoji" id="e-3">🎀</div>
+      <div class="card-label" id="l-3">style diary</div>
+      <div class="card-title" id="t-3">Fashion Inspo</div>
+      <div class="card-desc" id="d-3">save looks, outfits & the pieces you love.</div>
+      <div class="card-arrow">↗</div>
+      <div class="color-row" id="cr-3"></div>
+    </div>
+
+    <div class="card wide" style="background:#f0f8ff" id="card-4">
+      <div class="card-controls">
+        <button class="card-btn" onclick="openCardEdit(4)">edit</button>
+        <button class="card-btn del" onclick="deleteCard(4)">✕</button>
+      </div>
+      <div class="card-emoji" id="e-4">🌙</div>
+      <div class="card-label" id="l-4">the big picture</div>
+      <div class="card-title" id="t-4">Vision Boards</div>
+      <div class="card-desc" id="d-4">collage your dreams. manifest in pixels. where you're going.</div>
+      <div class="card-arrow">↗</div>
+      <div class="color-row" id="cr-4"></div>
+    </div>
+
+    <div class="card" style="background:#f0fff5" id="card-5">
+      <div class="card-controls">
+        <button class="card-btn" onclick="openCardEdit(5)">edit</button>
+        <button class="card-btn del" onclick="deleteCard(5)">✕</button>
+      </div>
+      <div class="card-emoji" id="e-5">🌿</div>
+      <div class="card-label" id="l-5">body & fuel</div>
+      <div class="card-title" id="t-5">Gym & Meals</div>
+      <div class="card-desc" id="d-5">log workouts, track meals, feel good.</div>
+      <div class="card-arrow">↗</div>
+      <div class="color-row" id="cr-5"></div>
+    </div>
+
+    <div class="add-card" onclick="addCard()">
+      <span style="font-size:18px">+</span> add a new card
+    </div>
+
+  </div>
+
+  <footer>
+    made with love & <span>♡</span> ·
+    <span class="editable" onclick="openPopup('footer')" id="footerText">your personal space on the internet</span>
+  </footer>
+</div>
+
+<!-- POPUP -->
+<div class="popup-overlay" id="overlay">
+  <div class="popup">
+    <h3 id="popup-title">edit text</h3>
+    <label id="popup-label">text</label>
+    <input type="text" id="popup-input" style="display:none">
+    <textarea id="popup-textarea" rows="3" style="display:none"></textarea>
+    <div class="popup-actions">
+      <button class="popup-btn cancel" onclick="closePopup()">cancel</button>
+      <button class="popup-btn save" onclick="savePopup()">save ✦</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const COLORS = [
+  { bg: '#fff0f5', dot: '#ffb3c6' },
+  { bg: '#fff8f0', dot: '#ffc49b' },
+  { bg: '#f5f0ff', dot: '#c9b8ff' },
+  { bg: '#f0fff5', dot: '#a8e6c0' },
+  { bg: '#f0f8ff', dot: '#a8d4f5' },
+  { bg: '#fffdf0', dot: '#ffe99b' },
+  { bg: '#fff0fe', dot: '#f5b8f5' },
+  { bg: '#f5f5f5', dot: '#d0d0d0' },
+];
+
+let editing = false;
+let currentField = null;
+let currentCardIdx = null;
+let cardCount = 6;
+
+function toggleEdit() {
+  editing = !editing;
+  document.body.classList.toggle('editing', editing);
+  const btn = document.getElementById('editToggle');
+  const hint = document.getElementById('hint');
+  btn.classList.toggle('active', editing);
+  btn.textContent = editing ? '✓ done editing' : '✦ edit mode';
+  hint.textContent = editing ? 'click anything to change it' : '';
+  if (editing) buildColorRows();
+}
+
+function buildColorRows() {
+  for (let i = 0; i < cardCount; i++) {
+    const row = document.getElementById('cr-' + i);
+    if (!row || row.children.length > 0) continue;
+    COLORS.forEach((c) => {
+      const dot = document.createElement('div');
+      dot.className = 'color-dot';
+      dot.style.background = c.dot;
+      dot.onclick = () => setCardColor(i, c.bg, dot, row);
+      row.appendChild(dot);
+    });
+  }
+}
+
+function setCardColor(idx, bg, dot, row) {
+  const card = document.getElementById('card-' + idx);
+  if (!card) return;
+  card.style.background = bg;
+  row.querySelectorAll('.color-dot').forEach(d => d.classList.remove('selected'));
+  dot.classList.add('selected');
+}
+
+function openPopup(field) {
+  if (!editing) return;
+  currentField = field;
+  currentCardIdx = null;
+  const map = {
+    tag:    { label: 'tag line',  title: 'edit tag',      el: 'tagText',    multi: false },
+    title:  { label: 'title (wrap a word in *asterisks* to italicise)', title: 'edit title', el: 'titleText', multi: false },
+    sub:    { label: 'subtitle',  title: 'edit subtitle', el: 'subText',    multi: false },
+    footer: { label: 'footer',    title: 'edit footer',   el: 'footerText', multi: false },
+  };
+  const cfg = map[field];
+  document.getElementById('popup-label').textContent = cfg.label;
+  document.getElementById('popup-title').textContent = cfg.title;
+  const cur = document.getElementById(cfg.el);
+  const input = document.getElementById('popup-input');
+  const ta = document.getElementById('popup-textarea');
+  input.value = cur.innerText;
+  input.style.display = 'block';
+  ta.style.display = 'none';
+  document.getElementById('overlay').classList.add('open');
+  setTimeout(() => input.focus(), 50);
+}
+
+function openCardEdit(idx) {
+  currentCardIdx = idx;
+  currentField = 'card';
+  document.getElementById('popup-title').textContent = 'edit card';
+  document.getElementById('popup-label').textContent = 'emoji · label · title · description (one per line)';
+  const ta = document.getElementById('popup-textarea');
+  const input = document.getElementById('popup-input');
+  ta.rows = 5;
+  ta.value = [
+    document.getElementById('e-' + idx).textContent,
+    document.getElementById('l-' + idx).textContent,
+    document.getElementById('t-' + idx).textContent,
+    document.getElementById('d-' + idx).textContent,
+  ].join('\n');
+  ta.style.display = 'block';
+  input.style.display = 'none';
+  document.getElementById('overlay').classList.add('open');
+  setTimeout(() => ta.focus(), 50);
+}
+
+function savePopup() {
+  if (currentField === 'card' && currentCardIdx !== null) {
+    const lines = document.getElementById('popup-textarea').value.split('\n');
+    if (lines[0] !== undefined) document.getElementById('e-' + currentCardIdx).textContent = lines[0];
+    if (lines[1] !== undefined) document.getElementById('l-' + currentCardIdx).textContent = lines[1];
+    if (lines[2] !== undefined) document.getElementById('t-' + currentCardIdx).textContent = lines[2];
+    if (lines[3] !== undefined) document.getElementById('d-' + currentCardIdx).textContent = lines.slice(3).join(' ');
+  } else {
+    const map = { tag: 'tagText', title: 'titleText', sub: 'subText', footer: 'footerText' };
+    const val = document.getElementById('popup-input').value;
+    const el = document.getElementById(map[currentField]);
+    if (currentField === 'title') {
+      const parts = val.split('*');
+      el.innerHTML = parts.map((p, i) => i % 2 === 1 ? `<em>${p}</em>` : p).join('');
+    } else {
+      el.textContent = val;
+    }
+  }
+  closePopup();
+}
+
+function closePopup() {
+  document.getElementById('overlay').classList.remove('open');
+  currentField = null;
+  currentCardIdx = null;
+}
+
+function deleteCard(idx) {
+  const card = document.getElementById('card-' + idx);
+  if (!card) return;
+  card.style.transition = 'opacity 0.3s, transform 0.3s';
+  card.style.opacity = '0';
+  card.style.transform = 'scale(0.9)';
+  setTimeout(() => card.remove(), 300);
+}
+
+function addCard() {
+  const grid = document.getElementById('grid');
+  const addBtn = grid.querySelector('.add-card');
+  const idx = cardCount++;
+  const card = document.createElement('div');
+  card.className = 'card';
+  card.id = 'card-' + idx;
+  card.style.background = '#fff8f8';
+  card.style.opacity = '0';
+  card.style.transform = 'scale(0.9)';
+  card.style.transition = 'opacity 0.3s, transform 0.3s';
+  card.innerHTML = `
+    <div class="card-controls">
+      <button class="card-btn" onclick="openCardEdit(${idx})">edit</button>
+      <button class="card-btn del" onclick="deleteCard(${idx})">✕</button>
+    </div>
+    <div class="card-emoji" id="e-${idx}">✦</div>
+    <div class="card-label" id="l-${idx}">new section</div>
+    <div class="card-title" id="t-${idx}">untitled</div>
+    <div class="card-desc" id="d-${idx}">click edit to customise this card.</div>
+    <div class="card-arrow">↗</div>
+    <div class="color-row" id="cr-${idx}"></div>`;
+  grid.insertBefore(card, addBtn);
+  requestAnimationFrame(() => {
+    card.style.opacity = '1';
+    card.style.transform = 'scale(1)';
+  });
+  buildColorRows();
+}
+
+document.getElementById('overlay').addEventListener('click', function(e) {
+  if (e.target === this) closePopup();
+});
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closePopup(); });
+</script>
+</body>
+</html>
